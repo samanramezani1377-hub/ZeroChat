@@ -21,16 +21,16 @@ jobs:
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
       with:
-        api-level: 34
-        build-tools: '34.0.0'
+        cmdline-tools-version: '12666702'
+        packages: 'platforms;android-34'
     
-    - name: Setup Getting Gradle
+    - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v4
       with:
-        gradle-version: 8.7
+        gradle-version: '8.7'
     
-    - name: Build Debug APK
-      run: chmod +x gradlew && ./gradlow assembleDebug --no-daemon --stacktrace
+    - name: Build Debug APK    
+      run: ./gradlew assembleDebug --no-daemon --stacktrace
     
     - name: Upload APK
       if: success()
