@@ -10,7 +10,7 @@ lifecycle = "2.8.2"
 coroutines = "1.8.1"
 navigation = "2.7.7"
 coil = "2.6.0"
-libsignal = "0.44.0"
+libsignal = "0.86.5"
 jmDNS = "3.5.8"
 webRTC = "1.0.32006"
 protobuf = "3.25.3"
@@ -57,8 +57,8 @@ coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutin
 # Coil
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 
-# Signal Protocol (E2E Encryption)
-libsignal-client = { group = "org.signal", name = "libsignal-client", version.ref = "libsignal" }
+# Signal Protocol (E2E Encryption) for Android
+libsignal-android = { group = "org.signal", name = "libsignal-android", version.ref = "libsignal" }
 
 # mDNS for LAN discovery
 jmdns = { group = "org.jmdns", name = "jmdns", version.ref = "jmDNS" }
