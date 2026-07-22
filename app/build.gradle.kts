@@ -78,4 +78,5 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.datastore.preferences)
     implementation(libs.accompanist.permissions)
+    implementation(libs.timber)
 }
