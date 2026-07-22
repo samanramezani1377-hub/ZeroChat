@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.hilt.android)
-    alias(libs.plugins.ksp)
+    alias(libs.plugins.ksp) // Needed for Hilt & Room annotation processing
 }
 
 android {
@@ -23,6 +23,7 @@ android {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
         debug {
             isMinifyEnabled = false
@@ -42,6 +43,12 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+    }
+
+    packaging {
+        resources {
+            pickFirsts += setOf("**/libsignal_jni.so")
+        }
     }
 }
 
@@ -66,7 +73,7 @@ dependencies {
     implementation(libs.coroutines.core)
     implementation(libs.coroutines.android)
     implementation(libs.coil.compose)
-    implementation(libs.libsignal.client)
+    implementation(libs.libsignal.android)
     implementation(libs.jmdns)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.datastore.preferences)
