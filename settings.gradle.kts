@@ -9,13 +9,21 @@ pluginManagement {
         }
         mavenCentral()
         gradlePluginPortal()
+        maven {
+            name = "SignalBuildArtifacts"
+            url = uri("https://build-artifacts.signal.org/libraries/maven/")
+        }
     }
 }
 
 dependencyResolutionManagement {
-    repository {
+    repositories {
         google()
         mavenCentral()
+        maven {
+            name = "SignalBuildArtifacts"
+            url = uri("https://build-artifacts.signal.org/libraries/maven/")
+        }
     }
 }
 
