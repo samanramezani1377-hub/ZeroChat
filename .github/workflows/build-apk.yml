@@ -18,34 +18,19 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
     
-    - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v3
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+      with:
+        api-level: 34
+        build-tools: '34.0.0'
+    
+    - name: Setup Getting Gradle
+      uses: gradle/actions/setup-gradle@v4
       with:
         gradle-version: 8.7
-
-    - name: Setup Android SDK
-      run: |
-        echo "y" | ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --install "build-tools;34.0.0" "platforms;android-34"
-      env:
-        ANDROID_HOME: /usr/lib/android-sdk
-    
-    - name: Check env
-      run: |
-        echo "ANDROID_HOME=$ANDROID_HOME"
-        echo "JAVA_HOME=$JAVA_HOME"
-        gradle --version
-        ls $ANDROID_HOME
-      env:
-        ANDROID_HOME: /usr/lib/android-sdk
-    
-    - name: Create local.properties
-      run: |
-        echo "sdk.dir=/usr/lib/android-sdk" > local.properties
     
     - name: Build Debug APK
-      run: gradle assembleDebug --no-daemon --stacktrace
-      env:
-        ANDROID_HOME: /usr/lib/android-sdk
+      run: chmod +x gradlew && ./gradlow assembleDebug --no-daemon --stacktrace
     
     - name: Upload APK
       if: success()
