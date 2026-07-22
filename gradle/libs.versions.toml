@@ -10,14 +10,13 @@ lifecycle = "2.8.2"
 coroutines = "1.8.1"
 navigation = "2.7.7"
 coil = "2.6.0"
-libsignal = "0.86.5"
+# JmDNS for LAN service discovery
 jmDNS = "3.5.8"
-webRTC = "1.0.32006"
-protobuf = "3.25.3"
+# Stream WebRTC — the maintained fork of Google WebRTC for Android
+stream-webrtc = "1.3.9"
 kotlinx-serialization = "1.6.3"
 datastore = "1.1.1"
 accompanist = "0.34.0"
-timber = "5.0.1"
 
 [libraries]
 # AndroidX Core
@@ -58,11 +57,11 @@ coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutin
 # Coil
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 
-# Signal Protocol (E2E Encryption) for Android
-libsignal-android = { group = "org.signal", name = "libsignal-android", version.ref = "libsignal" }
-
 # mDNS for LAN discovery
 jmdns = { group = "org.jmdns", name = "jmdns", version.ref = "jmDNS" }
+
+# Stream WebRTC (maintained Google WebRTC fork for Android)
+stream-webrtc-android = { group = "io.getstream", name = "stream-webrtc-android", version.ref = "stream-webrtc" }
 
 # Kotlinx Serialization
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
@@ -70,11 +69,11 @@ kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 # DataStore
 datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 
+# Timber (Logging)
+timber = { group = "com.jakewharton.timber", name = "timber", version = "5.0.1" }
+
 # Accompanist
 accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist" }
-
-# Timber
-timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
