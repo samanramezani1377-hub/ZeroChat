@@ -3,12 +3,13 @@ package com.zerochat.di
 import android.content.Context
 import androidx.room.Room
 import com.zerochat.crypto.CryptoEngine
-import com.zerochat.crypto.SignalCryptoEngine
+import com.zerochat.crypto.AesCryptoEngine
 import com.zerochat.data.local.ZeroChatDatabase
 import com.zerochat.data.local.MessageDao
 import com.zerochat.data.local.PeerDao
 import com.zerochat.data.repository.MessageRepositoryImpl
 import com.zerochat.data.repository.PeerRepositoryImpl
+import com.zerochat.domain.IncomingMessageHandler
 import com.zerochat.domain.MessageRepository
 import com.zerochat.domain.PeerRepository
 import com.zerochat.domain.SendMessageUseCase
@@ -31,7 +32,9 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
-    // ── Database ──
+    // ═══════════════════════════════════════════════════════════════
+    // Database
+    // ═══════════════════════════════════════════════════════════════
 
     @Provides
     @Singleton
@@ -51,15 +54,19 @@ object AppModule {
     @Provides
     fun providePeerDao(db: ZeroChatDatabase): PeerDao = db.peerDao()
 
-    // ── Crypto ──
+    // ═══════════════════════════════════════════════════════════════
+    // Crypto
+    // ═══════════════════════════════════════════════════════════════
 
     @Provides
     @Singleton
-    fun provideCryptoEngine(@ApplicationContext context: Context): CryptoEngine {
-        return SignalCryptoEngine(context)
+    fun provideCryptoEngine(): CryptoEngine {
+        return AesCryptoEngine()
     }
 
-    // ── Network ──
+    // ═══════════════════════════════════════════════════════════════
+    // Network — LAN
+    // ═══════════════════════════════════════════════════════════════
 
     @Provides
     @Singleton
@@ -76,11 +83,19 @@ object AppModule {
         return LanTransportImpl(context, wifiDirectReceiver)
     }
 
+    // ═══════════════════════════════════════════════════════════════
+    // Network — WAN
+    // ═══════════════════════════════════════════════════════════════
+
     @Provides
     @Singleton
     fun provideWanTransport(): WanTransport {
         return WebRtcTransport()
     }
+
+    // ═══════════════════════════════════════════════════════════════
+    // Transport Router
+    // ═══════════════════════════════════════════════════════════════
 
     @Provides
     @Singleton
@@ -91,7 +106,9 @@ object AppModule {
         return TransportRouterImpl(lanTransport, wanTransport)
     }
 
-    // ── Domain ──
+    // ═══════════════════════════════════════════════════════════════
+    // Domain — Session & Use Cases
+    // ═══════════════════════════════════════════════════════════════
 
     @Provides
     @Singleton
@@ -110,7 +127,20 @@ object AppModule {
         return SendMessageUseCase(cryptoEngine, messageRepository, sessionManager, transportRouter)
     }
 
-    // ── Repositories ──
+    @Provides
+    @Singleton
+    fun provideIncomingMessageHandler(
+        cryptoEngine: CryptoEngine,
+        messageRepository: MessageRepository,
+        sessionManager: SessionManager,
+        transportRouter: TransportRouter,
+    ): IncomingMessageHandler {
+        return IncomingMessageHandler(cryptoEngine, messageRepository, sessionManager, transportRouter)
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // Repositories
+    // ═══════════════════════════════════════════════════════════════
 
     @Provides
     @Singleton
