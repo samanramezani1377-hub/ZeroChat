@@ -1,5 +1,6 @@
 package com.zerochat.domain
 
+import android.util.Base64
 import com.zerochat.crypto.CryptoEngine
 import com.zerochat.data.model.Message
 import com.zerochat.network.transport.TransportRouter
@@ -44,16 +45,23 @@ class IncomingMessageHandler @Inject constructor(
             // 1. Get or create session with the peer
             val sessionId = sessionManager.getOrCreateSession(peerFingerprint)
 
-            // 2. Decrypt the message
-            val plaintext = cryptoEngine.decrypt(sessionId, encryptedPayload)
+            // 2. Convert ByteArray to Base64 String
+            val ciphertextString = Base64.encodeToString(encryptedPayload, Base64.NO_WRAP)
 
-            // 3. Deserialize the message
-            val message = deserializeMessage(plaintext, peerFingerprint)
+            // 3. Decrypt the message
+            val plaintext = cryptoEngine.decrypt(sessionId, ciphertextString)
 
-            // 4. Save to local database
-            messageRepository.saveMessage(message)
+            // 4. Deserialize the message
+            if (plaintext != null) {
+                val message = deserializeMessage(plaintext, peerFingerprint)
 
-            Timber.d("Message received from $peerFingerprint: ${message.content}")
+                // 5. Save to local database
+                messageRepository.saveMessage(message)
+
+                Timber.d("Message received from $peerFingerprint: ${message.content}")
+            } else {
+                Timber.w("Failed to decrypt message from $peerFingerprint")
+            }
         } catch (e: Exception) {
             Timber.e(e, "Failed to process incoming message from $peerFingerprint")
         }
