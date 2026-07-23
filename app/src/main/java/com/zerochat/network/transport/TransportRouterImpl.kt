@@ -125,7 +125,7 @@ class TransportRouterImpl @Inject constructor(
             }
             TransportMode.UNKNOWN -> {
                 // Try LAN first
-                if (lanTransport.connectionState().value == LanConnectionState.CONNECTED) {
+                if (lanTransport.connectionState().first() == LanConnectionState.CONNECTED) {
                     state.mode = TransportMode.LAN
                     lanTransport.sendData(encryptedPayload)
                 } else {
