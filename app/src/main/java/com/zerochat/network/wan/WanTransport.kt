@@ -16,7 +16,7 @@ interface WanTransport {
     suspend fun close()
 }
 
-data class IceServer(val urls: List<String>, val username: String = null, val credential: String = null)
+data class IceServer(val urls: List<String>, val username: String? = null, val credential: String? = null)
 data class IceCandidate(val sdp: String, val sdpMid: String, val sdpMLineIndex: Int)
 enum class WebRtcConnectionState { NEW, CONNECTING, CONNECTED, DISCONNECTED, FAILED, CLOSED }
 
