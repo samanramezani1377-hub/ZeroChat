@@ -89,8 +89,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideWanTransport(): WanTransport {
-        return WebRtcTransport()
+    fun provideWanTransport(@ApplicationContext context: Context): WanTransport {
+        return WebRtcTransport(context)
     }
 
     // ═══════════════════════════════════════════════════════════════
