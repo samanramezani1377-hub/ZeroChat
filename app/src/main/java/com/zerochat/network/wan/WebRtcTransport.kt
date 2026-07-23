@@ -1,5 +1,6 @@
 package com.zerochat.network.wan
 
+import android.content.Context
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
@@ -22,7 +23,9 @@ import javax.inject.Singleton
  *  6. DataChannel opens → encrypted messaging begins
  */
 @Singleton
-class WebRtcTransport @Inject constructor() : WanTransport {
+class WebRtcTransport @Inject constructor(
+    private val context: Context,
+) : WanTransport {
 
     // ── WebRTC core ──
     private var peerConnectionFactory: PeerConnectionFactory? = null
@@ -60,7 +63,7 @@ class WebRtcTransport @Inject constructor() : WanTransport {
         if (initialized) return
 
         // Initialize WebRTC
-        val options = PeerConnectionFactory.InitializationOptions.builder()
+        val options = PeerConnectionFactory.InitializationOptions.builder(context)
             .createInitializationOptions()
         PeerConnectionFactory.initialize(options)
 
@@ -164,7 +167,7 @@ class WebRtcTransport @Inject constructor() : WanTransport {
         withTimeoutOrNull(5000) {
             suspendCancellableCoroutine<Unit> { cont ->
                 peerConnection?.setRemoteDescription(object : SdpObserverAdapter() {
-                    override fun onSetSuccess() = cont.resume(Unit) {}
+                    override fun onSetSuccess() = cont.resume(Unit)
                     override fun onSetFailure(reason: String) {
                         cont.resumeWithException(RuntimeException("Failed: $reason"))
                     }
@@ -214,14 +217,16 @@ class WebRtcTransport @Inject constructor() : WanTransport {
 
     private fun createPeerConnectionObserver(): PeerConnection.Observer {
         return object : PeerConnection.Observer {
-            override fun onIceCandidate(candidate: IceCandidate) {
-                _localIceCandidates.trySend(
-                    IceCandidate(
-                        sdp = candidate.sdp,
-                        sdpMid = candidate.sdpMid,
-                        sdpMLineIndex = candidate.sdpMLineIndex,
+            override fun onIceCandidate(candidate: IceCandidate?) {
+                if (candidate != null) {
+                    _localIceCandidates.trySend(
+                        IceCandidate(
+                            sdp = candidate.sdp,
+                            sdpMid = candidate.sdpMid,
+                            sdpMLineIndex = candidate.sdpMLineIndex,
+                        )
                     )
-                )
+                }
             }
 
             override fun onIceCandidatesRemoved(candidates: Array<out IceCandidate>?) {}
