@@ -3,7 +3,7 @@ package com.zerochat.network.wan
 import kotlinx.coroutines.flow.Flow
 
 interface WanTransport {
-    fun configureIceServers(servers: List<IceServer>
+    fun configureIceServers(servers: List<IceServer>)
     suspend fun createOffer(): String
     suspend fun createAnswer(offerSdp: String): String
     suspend fun setRemoteAnswer(answerSdp: String)
