@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data class Peer(
     val id: Long = 0,
     val identity: PeerIdentity,
-    val lastKnownIp: String = null,
+    val lastKnownIp: String? = null,
     val lastKnownPort: Int = DEFAULT_PORT,
     val lastSeenAt: Long = System.currentTimeMillis(),
     val discoveryMethod: DiscoveryMethod = DiscoveryMethod.MANUAL,
