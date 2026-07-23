@@ -75,14 +75,14 @@ class IncomingMessageHandler @Inject constructor(
         peerFingerprint: String
     ): Message {
         return Message(
-            id = Message.generateId(peerFingerprint, System.currentTimeMillis()),
+            id = "${peerFingerprint}_${System.currentTimeMillis()}",
             conversationId = peerFingerprint,
             senderFingerprint = peerFingerprint,
             content = plaintext,
             plainContent = plaintext,
             contentType = com.zerochat.data.model.ContentType.TEXT,
             timestamp = System.currentTimeMillis(),
-            status = com.zerochat.data.model.MessageStatus.RECEIVED,
+            status = com.zerochat.data.model.MessageStatus.DELIVERED,
             isOutgoing = false,
         )
     }
