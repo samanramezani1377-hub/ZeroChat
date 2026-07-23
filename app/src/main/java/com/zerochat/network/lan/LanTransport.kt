@@ -18,6 +18,13 @@ interface LanTransport {
     fun getLocalAddresses(): List<String>
 }
 
-data class LanPeer(val identity: PeerIdentity = null, val ipAddress: String, val port: Int = 45454, val displayName: String = "Unknown", val discoveryMethod: String = "wifi_direct", val deviceId: String = "")
+data class LanPeer(
+    val identity: PeerIdentity? = null,
+    val ipAddress: String,
+    val port: Int = 45454,
+    val displayName: String = "Unknown",
+    val discoveryMethod: String = "wifi_direct",
+    val deviceId: String = ""
+)
 
 enum class LanConnectionState { DISCONNECTED, LISTENING, DISCOVERING, CONNECTING, CONNECTED }
