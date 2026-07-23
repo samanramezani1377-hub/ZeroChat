@@ -1,10 +1,9 @@
 package com.zerochat.domain
 
 import com.zerochat.crypto.CryptoEngine
-import com.zerochat.crypto.SessionInitiation
 import com.zerochat.data.model.*
+import com.zerochat.network.transport.TransportRouter
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
 import timber.log.Timber
 
 /**
@@ -15,7 +14,7 @@ class SendMessageUseCase(
     private val cryptoEngine: CryptoEngine,
     private val messageRepository: MessageRepository,
     private val sessionManager: SessionManager,
-    private val transportRouter: TransportRouter, // will be resolved via DI
+    private val transportRouter: TransportRouter,
 ) {
 
     /**
@@ -37,11 +36,11 @@ class SendMessageUseCase(
 
         // 3. Create message record
         val message = Message(
-            id = Message.generateId(cryptoEngine.getLocalFingerprint(), System.currentTimeMillis()),
+            id = "${cryptoEngine.getLocalFingerprint()}_${System.currentTimeMillis()}",
             conversationId = peerFingerprint,
             senderFingerprint = cryptoEngine.getLocalFingerprint(),
-            content = ciphertext, // Encrypted
-            plainContent = plaintext, // Plaintext for local display
+            content = ciphertext,
+            plainContent = plaintext,
             contentType = ContentType.TEXT,
             timestamp = System.currentTimeMillis(),
             status = MessageStatus.SENDING,
@@ -52,7 +51,7 @@ class SendMessageUseCase(
         messageRepository.saveMessage(message)
 
         // 5. Send over the best available transport
-        try {
+        return try {
             val payload = serializeMessage(message)
             transportRouter.send(peerFingerprint, payload)
 
@@ -68,7 +67,7 @@ class SendMessageUseCase(
 
     /**
      * Serialize a message to bytes for transport.
-     * Format: [4 bytes: message ID length][message ID UTF-8][4 bytes: content length][content]
+     * Format: [4 bytes: message ID length][message ID UTF-8][4 bytes: sender length][sender UTF-8][4 bytes: content length][content]
      */
     private fun serializeMessage(message: Message): ByteArray {
         val idBytes = message.id.toByteArray(Charsets.UTF_8)
