@@ -1,6 +1,7 @@
 package com.zerochat.domain
 
 import com.zerochat.crypto.CryptoEngine
+import com.zerochat.crypto.SessionInitiation
 import timber.log.Timber
 
 /**
@@ -37,7 +38,7 @@ class SessionManager(
      * Accept an incoming session from a peer.
      */
     fun acceptSession(peerFingerprint: String, initiation: SessionInitiation) {
-        cryptoEngine.acceptSession(initiation)
+        val acceptance = cryptoEngine.acceptSession(initiation)
         sessions[peerFingerprint] = initiation.sessionId
         Timber.d("Session accepted from $peerFingerprint: ${initiation.sessionId}")
     }
