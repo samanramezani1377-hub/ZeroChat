@@ -68,7 +68,7 @@ class IncomingMessageHandler @Inject constructor(
     }
 
     /**
-     * Deserialize message from bytes
+     * Deserialize message from string
      */
     private fun deserializeMessage(
         plaintext: String,
